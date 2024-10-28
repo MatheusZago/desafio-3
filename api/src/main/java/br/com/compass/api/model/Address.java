@@ -1,28 +1,34 @@
 package br.com.compass.api.model;
 
 import com.google.gson.annotations.SerializedName;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
 
+@Entity
+@Table(name = "addresses")
 public class Address implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @SerializedName("cep")           // Mapeia o campo "cep" do JSON para zipCode
+    @Id
+    @SerializedName("cep")
     private String zipCode;
 
-    @SerializedName("logradouro")     // Mapeia o campo "logradouro" do JSON para street
+    @SerializedName("logradouro")
     private String street;
 
-    @SerializedName("complemento")    // Mapeia o campo "complemento" do JSON para complement
+    @SerializedName("complemento")
     private String complement;
 
-    @SerializedName("bairro")         // Mapeia o campo "bairro" do JSON para neighborhood
+    @SerializedName("bairro")
     private String neighborhood;
 
-    @SerializedName("localidade")     // Mapeia o campo "localidade" do JSON para city
+    @SerializedName("localidade")
     private String city;
 
-    @SerializedName("uf")             // Mapeia o campo "uf" do JSON para state
+    @SerializedName("uf")
     private String state;
 
     public Address(){}
