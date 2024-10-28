@@ -2,15 +2,22 @@ package br.com.compass.api.services;
 
 import br.com.compass.api.model.User;
 import br.com.compass.api.model.vo.CreateUserVO;
+import br.com.compass.api.model.vo.ResponseUserVO;
+import br.com.compass.api.model.vo.UpdateRequestVO;
 import br.com.compass.api.model.vo.mapper.UserMapper;
 import br.com.compass.api.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Service
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserRepository repository;
 
@@ -18,11 +25,32 @@ public class UserService {
     private UserMapper mapper;
 
     @PostMapping
-    public User registerUser(CreateUserVO vo){
+    public ResponseUserVO registerUser(CreateUserVO vo){
 
         User user = mapper.createVoToUser(vo);
 
-        return repository.save(user);
+        repository.save(user);
+
+        ResponseUserVO responseUserVO = mapper.userToResponseVO(user);
+
+        return responseUserVO;
+    }
+
+    @PutMapping
+    public void updatePassword(UpdateRequestVO vo){
+        User user = repository.findByUsernameAndPassword(vo.getUsername(), vo.getOldPassword());
+
+
+        if(user.getPassword().equals(vo.getOldPassword())){
+            user.setPassword(vo.getNewPassword());
+            System.out.print(user.getPassword());
+
+            repository.save(user);
+        }else {
+            // TODO Criar exception.
+            log.error("Erro nas senhas");
+        }
+
     }
 
 }
