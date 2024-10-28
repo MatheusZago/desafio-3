@@ -1,7 +1,7 @@
 package br.com.compass.api.controllers;
 
-import br.com.compass.api.model.User;
 import br.com.compass.api.model.vo.CreateUserVO;
+import br.com.compass.api.model.vo.ResponseUserVO;
 import br.com.compass.api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +17,7 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody CreateUserVO vo){
+    public ResponseUserVO registerUser(@RequestBody CreateUserVO vo){
         return service.registerUser(vo);
     }
 
