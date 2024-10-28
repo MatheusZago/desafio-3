@@ -1,9 +1,7 @@
 package br.com.compass.api.model;
 
 import com.google.gson.annotations.SerializedName;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 
@@ -13,6 +11,9 @@ public class Address implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @SerializedName("cep")
     private String zipCode;
 
