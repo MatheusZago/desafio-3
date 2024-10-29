@@ -1,6 +1,6 @@
 spring:
   application:
-    name=desafio3
+    name: api
   datasource:
     url: jdbc:mysql://localhost:3306/challenge_users?useSSL=false&serverTimezone=UTC
     username: root
@@ -14,3 +14,13 @@ spring:
     properties:
       hibernate:
       dialect: org.hibernate.dialect.MySQL8Dialect
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    topics:
+      message:
+        request:
+          topic: "message.request.topic.v1"
