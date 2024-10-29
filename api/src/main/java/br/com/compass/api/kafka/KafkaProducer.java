@@ -13,9 +13,9 @@ public class KafkaProducer {
     private static final String TOPIC = "notify_topic";
 
     @Autowired
-    private KafkaTemplate<String, NotifyMessage> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(NotifyMessage message) {
+    public void sendMessage(String message) {
         kafkaTemplate.send(TOPIC, message);
     }
 }

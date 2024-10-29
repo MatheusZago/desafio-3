@@ -36,8 +36,8 @@ public class UserService {
 
         ResponseUserVO responseUserVO = mapper.userToResponseVO(user);
 
-        NotifyMessage message = new NotifyMessage(vo.getUsername(), "CREATE");
-
+//        NotifyMessage message = new NotifyMessage(vo.getUsername(), "CREATE");
+        String message = user.getUsername() + ",CREATE";
         kafkaProducer.sendMessage(message);
 
         return responseUserVO;
@@ -52,8 +52,8 @@ public class UserService {
             user.setPassword(vo.getNewPassword());
             System.out.print(user.getPassword());
 
-            NotifyMessage message = new NotifyMessage(vo.getUsername(), "UPDATE");
-
+//            NotifyMessage message = new NotifyMessage(vo.getUsername(), "UPDATE");
+            String message = user.getUsername() + ",UPDATE";
             kafkaProducer.sendMessage(message);
             repository.save(user);
         }else {
