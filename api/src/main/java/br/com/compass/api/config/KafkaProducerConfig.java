@@ -19,9 +19,6 @@ import java.util.Map;
 @EnableKafka
 public class KafkaProducerConfig {
 
-    @Value("${spring.kafka.topics.message.request.topic}")
-    private String messageRequestTopic;
-
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> properties = new HashMap<>();
