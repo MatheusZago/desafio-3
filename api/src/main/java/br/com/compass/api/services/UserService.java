@@ -1,7 +1,6 @@
 package br.com.compass.api.services;
 
 import br.com.compass.api.kafka.KafkaProducer;
-import br.com.compass.api.model.NotifyMessage;
 import br.com.compass.api.model.User;
 import br.com.compass.api.model.vo.CreateUserVO;
 import br.com.compass.api.model.vo.ResponseUserVO;
@@ -36,8 +35,7 @@ public class UserService {
 
         ResponseUserVO responseUserVO = mapper.userToResponseVO(user);
 
-//        NotifyMessage message = new NotifyMessage(vo.getUsername(), "CREATE");
-        String message = user.getUsername() + ",CREATE";
+        String message = "User: " + user.getUsername() + " used a CREATE function";
         kafkaProducer.sendMessage(message);
 
         return responseUserVO;
@@ -52,13 +50,12 @@ public class UserService {
             user.setPassword(vo.getNewPassword());
             System.out.print(user.getPassword());
 
-//            NotifyMessage message = new NotifyMessage(vo.getUsername(), "UPDATE");
-            String message = user.getUsername() + ",UPDATE";
+            String message = "User: " + user.getUsername() + " used a UPDATE function";
             kafkaProducer.sendMessage(message);
             repository.save(user);
         }else {
             // TODO Criar exception.
-            log.error("Erro nas senhas");
+            log.error("Password Error");
         }
 
     }
