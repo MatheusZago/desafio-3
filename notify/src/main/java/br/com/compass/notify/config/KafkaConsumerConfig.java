@@ -1,6 +1,5 @@
 package br.com.compass.notify.config;
 
-import br.com.compass.notify.model.NotifyMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
