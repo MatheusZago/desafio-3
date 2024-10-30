@@ -8,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: challenge_users
     ports:
-      - "3306:3306"
+      - "3307:3307"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -39,7 +39,7 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092  #  para conectar ao Kafka
     depends_on:
       - kafka
-      - zookeeper  # Garantir que Zookeeper está pronto antes de iniciar o notify
+      - zookeeper
     networks:
       - app-network
 
