@@ -16,9 +16,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
   kafka:
-    #bootstrap-servers: localhost:9092 #Para uso local
-    bootstrap-servers: kafka:9092 #Para uso com docker
-
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer

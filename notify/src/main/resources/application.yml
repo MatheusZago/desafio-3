@@ -2,8 +2,6 @@ spring:
   application:
     name: notify
   kafka:
-    #bootstrap-servers: localhost:9092 #para uso local
-    bootstrap-servers: kafka:9092 #para uso com docker
     consumer:
       group-id: notify_group
       auto-offset-reset: earliest
