@@ -17,6 +17,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseUserVO> registerUser(@RequestBody CreateUserVO vo){
+        System.out.println("Chamando o método de registro de usuário...");
         return ResponseEntity.ok(service.registerUser(vo));
     }
 
