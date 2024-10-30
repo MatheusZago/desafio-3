@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -28,9 +30,7 @@ public class UserService {
 
     @PostMapping
     public ResponseUserVO registerUser(CreateUserVO vo){
-
         User user = mapper.createVoToUser(vo);
-
         repository.save(user);
 
         ResponseUserVO responseUserVO = mapper.userToResponseVO(user);
@@ -60,4 +60,7 @@ public class UserService {
 
     }
 
+    public List<User> getAllUsers() {
+        return repository.getAllUsers();
+    }
 }
