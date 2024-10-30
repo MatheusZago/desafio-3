@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0.29
@@ -15,7 +13,7 @@ services:
       - app-network
 
   api:
-    image: api-challenge
+    image: matheusluizago/api-challenge
     container_name: api_service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/challenge_users?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
@@ -33,7 +31,7 @@ services:
       - app-network
 
   notify:
-    image: notify-challenge
+    image: matheusluizago/notify-challenge
     container_name: notify_service
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092  #  para conectar ao Kafka
