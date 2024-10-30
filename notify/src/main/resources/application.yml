@@ -2,8 +2,9 @@ spring:
   application:
     name: notify
   kafka:
+    #bootstrap-servers: localhost:9092 #para uso local
+    bootstrap-servers: kafka:9092 #para uso com docker
     consumer:
-      bootstrap-servers: kafka:9092
       group-id: notify_group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -11,4 +12,3 @@ spring:
 
 server:
   port: 9090
-
