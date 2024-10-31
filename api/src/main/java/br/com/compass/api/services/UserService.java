@@ -1,15 +1,18 @@
 package br.com.compass.api.services;
 
+import br.com.compass.api.config.SecurityConfig;
+import br.com.compass.api.jwt.UserDetailsImpl;
 import br.com.compass.api.kafka.KafkaProducer;
 import br.com.compass.api.model.User;
-import br.com.compass.api.model.vo.CreateUserVO;
-import br.com.compass.api.model.vo.ResponseUserVO;
-import br.com.compass.api.model.vo.UpdateRequestVO;
+import br.com.compass.api.model.vo.*;
 import br.com.compass.api.model.vo.mapper.UserMapper;
 import br.com.compass.api.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,7 +27,12 @@ public class UserService {
     private UserRepository repository;
     @Autowired
     private KafkaProducer kafkaProducer;
-
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtTokenService jwtTokenService;
+    @Autowired
+    private SecurityConfig securityConfig;
     @Autowired
     private UserMapper mapper;
 
@@ -63,4 +71,20 @@ public class UserService {
     public List<User> getAllUsers() {
         return repository.getAllUsers();
     }
+
+    public JwtResponseVo authenticateUser(LoginRequestVO loginRequestVO) {
+            // Cria um objeto de autenticação com o email e a senha do usuário
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginRequestVO.getUsername(), loginRequestVO.getPassword());
+
+            // Autentica o usuário com as credenciais fornecidas
+            Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+            // Obtém o objeto UserDetails do usuário autenticado
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            // Gera um token JWT para o usuário autenticado
+            return new JwtResponseVo(jwtTokenService.generateToken(userDetails));
+    }
 }
+

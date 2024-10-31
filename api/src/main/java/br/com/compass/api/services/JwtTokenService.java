@@ -4,11 +4,14 @@ import br.com.compass.api.jwt.UserDetailsImpl;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 import com.auth0.jwt.JWT;
 
@@ -56,4 +59,19 @@ public class JwtTokenService {
         return ZonedDateTime.now(ZoneId.of("America/Recife")).plusHours(4).toInstant();
     }
 
+    public boolean isValidToken(String token) {
+        try {
+            // Verifica a assinatura e extrai as claims
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // Verifica se o token não está expirado
+            return !claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            // Caso haja algum erro na validação, retorna false
+            return false;
+        }
+    }
 }

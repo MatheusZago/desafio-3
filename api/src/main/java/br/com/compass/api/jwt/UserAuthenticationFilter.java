@@ -21,6 +21,7 @@ import java.util.Optional;
 
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtTokenService jwtTokenService;
 
@@ -35,6 +36,12 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             if (token == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "O token está ausente.");
                 return; // Finaliza o processamento se o token não estiver presente
+            }
+
+            // Verifica a validade do token
+            if (!jwtTokenService.isValidToken(token)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido.");
+                return; // Finaliza o processamento se o token for inválido
             }
 
             String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
@@ -54,13 +61,15 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        filterChain.doFilter(request, response); // Continua o processamento da requisição
+
+        // Continua o processamento da requisição
+        filterChain.doFilter(request, response);
     }
 
     // Recupera o token do cabeçalho Authorization da requisição
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.replace("Bearer ", "");
         }
         return null;

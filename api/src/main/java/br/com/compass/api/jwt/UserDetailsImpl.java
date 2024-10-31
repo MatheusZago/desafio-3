@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private User user; // Classe de usuário que criamos anteriormente
+    private User user;
 
     public UserDetailsImpl(User user) {
         this.user = user;
@@ -25,12 +25,12 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getPassword() {
         return user.getPassword();
-    } // Retorna a credencial do usuário que criamos anteriormente
+    }
 
     @Override
     public String getUsername() {
         return user.getUsername();
-    } // Retorna o nome de usuário do usuário que criamos anteriormente
+    }
 
     @Override
     public boolean isAccountNonExpired() {

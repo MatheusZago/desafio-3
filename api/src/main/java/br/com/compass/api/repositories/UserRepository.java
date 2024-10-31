@@ -13,7 +13,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-//    @Modifying
     @Query("SELECT u FROM User u WHERE u.username = :username AND u.password = :password")
     User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 

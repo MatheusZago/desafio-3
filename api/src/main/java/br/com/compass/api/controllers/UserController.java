@@ -1,12 +1,17 @@
 package br.com.compass.api.controllers;
 
+import br.com.compass.api.jwt.UserDetailsImpl;
 import br.com.compass.api.model.User;
-import br.com.compass.api.model.vo.CreateUserVO;
-import br.com.compass.api.model.vo.ResponseUserVO;
-import br.com.compass.api.model.vo.UpdateRequestVO;
+import br.com.compass.api.model.vo.*;
+import br.com.compass.api.services.JwtTokenService;
 import br.com.compass.api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private UserService service;
@@ -34,5 +45,26 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(service.getAllUsers());
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponseVo> authenticateUser(@RequestBody LoginRequestVO loginRequestVO) {
+        JwtResponseVo token = service.authenticateUser(loginRequestVO);
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestVO loginRequest) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        // Extraia o UserDetailsImpl do Authentication
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//        // Gere o token usando UserDetailsImpl
+//        String token = jwtTokenService.generateToken(userDetails);
+//        return ResponseEntity.ok(new JwtResponseVo(token));
+//    }
 
 }
