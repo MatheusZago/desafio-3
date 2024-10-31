@@ -24,12 +24,13 @@ public class SecurityConfig {
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/api/users/register",
             "/api/users/login",
-            "/api/users/getAll"
+            "/api/users/getAll",
+            "/api/users/update-password"
     };
 
     // Endpoints que requerem autenticação para serem acessados
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/api/users/update-password"
+            "/api/auth/update-password"
     };
 
     @Bean

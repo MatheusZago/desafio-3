@@ -17,8 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -56,21 +58,28 @@ public class UserService {
     }
 
     @PutMapping
-    public void updatePassword(UpdateRequestVO vo){
-        // Busca o usuário apenas pelo username
-        User user = repository.findByUsernameAndPassword(vo.getUsername(), vo.getOldPassword());
+    public void updatePassword(@RequestBody UpdateRequestVO vo) {
+        // Buscando o usuário
+        Optional<User> optionalUser = repository.findByUsername(vo.getUsername());
 
-        if (user != null && passwordEncoder.matches(vo.getOldPassword(), user.getPassword())) {
-            // Codifica a nova senha e salva
-            user.setPassword(passwordEncoder.encode(vo.getNewPassword()));
+        // Verificando se o usuário está presente
+        optionalUser.ifPresentOrElse(user -> {
+            // Verifica se a senha antiga está correta
+            if (passwordEncoder.matches(vo.getOldPassword(), user.getPassword())) {
+                // Codifica a nova senha e salva
+                user.setPassword(passwordEncoder.encode(vo.getNewPassword()));
 
-            String message = "User: " + user.getUsername() + " used an UPDATE function";
-            kafkaProducer.sendMessage(message);
-            repository.save(user);
-        } else {
-            log.error("Password Error");
-            // TODO: Lançar uma exceção customizada aqui
-        }
+                String message = "User: " + user.getUsername() + " used an UPDATE function";
+                kafkaProducer.sendMessage(message);
+                repository.save(user);
+            } else {
+                log.error("Password Error");
+                // TODO: Lançar uma exceção customizada aqui
+            }
+        }, () -> {
+            log.error("User not found");
+            // TODO: Lançar uma exceção customizada para usuário não encontrado
+        });
     }
 
     public List<User> getAllUsers() {
