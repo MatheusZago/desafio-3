@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     // Endpoints que requerem autenticação para serem acessados
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/api/auth/update-password"
+//            "/api/users/update-password"
     };
 
     @Bean

@@ -35,11 +35,5 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-//    @Bean
-//    public NewTopic messageRequestTopicBuilder() {
-//        return TopicBuilder.name(messageRequestTopic)
-//                .partitions(1)
-//                .replicas(1)
-//                .build();
-//    }
+
 }
