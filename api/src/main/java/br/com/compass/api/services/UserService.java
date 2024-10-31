@@ -100,5 +100,9 @@ public class UserService {
 
             return new JwtResponseVo(jwtTokenService.generateToken(userDetails));
     }
+
+    public void deleteUsersByUsername(String username) {
+        repository.deleteByUsername(username);
+    }
 }
 

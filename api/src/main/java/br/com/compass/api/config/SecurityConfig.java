@@ -25,7 +25,8 @@ public class SecurityConfig {
             "/api/users/register",
             "/api/users/login",
             "/api/users/getAll",
-            "/api/users/update-password"
+            "/api/users/update-password",
+            "/api/users/delete/*"
     };
 
     // Endpoints que requerem autenticação para serem acessados
