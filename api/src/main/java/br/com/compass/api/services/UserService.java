@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,10 +36,15 @@ public class UserService {
     private SecurityConfig securityConfig;
     @Autowired
     private UserMapper mapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping
     public ResponseUserVO registerUser(CreateUserVO vo){
         User user = mapper.createVoToUser(vo);
+
+        // Codifica a senha antes de salvar
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         repository.save(user);
 
         ResponseUserVO responseUserVO = mapper.userToResponseVO(user);
@@ -51,21 +57,20 @@ public class UserService {
 
     @PutMapping
     public void updatePassword(UpdateRequestVO vo){
+        // Busca o usuário apenas pelo username
         User user = repository.findByUsernameAndPassword(vo.getUsername(), vo.getOldPassword());
 
+        if (user != null && passwordEncoder.matches(vo.getOldPassword(), user.getPassword())) {
+            // Codifica a nova senha e salva
+            user.setPassword(passwordEncoder.encode(vo.getNewPassword()));
 
-        if(user.getPassword().equals(vo.getOldPassword())){
-            user.setPassword(vo.getNewPassword());
-            System.out.print(user.getPassword());
-
-            String message = "User: " + user.getUsername() + " used a UPDATE function";
+            String message = "User: " + user.getUsername() + " used an UPDATE function";
             kafkaProducer.sendMessage(message);
             repository.save(user);
-        }else {
-            // TODO Criar exception.
+        } else {
             log.error("Password Error");
+            // TODO: Lançar uma exceção customizada aqui
         }
-
     }
 
     public List<User> getAllUsers() {
