@@ -1,6 +1,5 @@
 package br.com.compass.api.kafka;
 
-import br.com.compass.api.model.NotifyMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

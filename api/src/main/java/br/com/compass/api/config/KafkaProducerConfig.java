@@ -22,8 +22,8 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> properties = new HashMap<>();
-        //properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092"); //para uso local
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092"); //para uso com docker
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092"); //para uso local
+        //properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092"); //para uso com docker
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
@@ -35,11 +35,5 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-//    @Bean
-//    public NewTopic messageRequestTopicBuilder() {
-//        return TopicBuilder.name(messageRequestTopic)
-//                .partitions(1)
-//                .replicas(1)
-//                .build();
-//    }
+
 }
