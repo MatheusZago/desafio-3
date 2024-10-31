@@ -48,19 +48,4 @@ public class UserController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestVO loginRequest) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        // Extraia o UserDetailsImpl do Authentication
-//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//
-//        // Gere o token usando UserDetailsImpl
-//        String token = jwtTokenService.generateToken(userDetails);
-//        return ResponseEntity.ok(new JwtResponseVo(token));
-//    }
-
 }

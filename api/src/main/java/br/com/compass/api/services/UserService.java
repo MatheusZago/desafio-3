@@ -50,7 +50,6 @@ public class UserService {
     public ResponseUserVO registerUser(@RequestBody CreateUserVO vo) {
         User user = mapper.createVoToUser(vo);
 
-        // Codifica a senha antes de salvar
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         try {
@@ -70,14 +69,10 @@ public class UserService {
 
     @PutMapping
     public void updatePassword(@RequestBody UpdateRequestVO vo) {
-        // Buscando o usuário
         Optional<User> optionalUser = repository.findByUsername(vo.getUsername());
 
-        // Verificando se o usuário está presente
         optionalUser.ifPresentOrElse(user -> {
-            // Verifica se a senha antiga está correta
             if (passwordEncoder.matches(vo.getOldPassword(), user.getPassword())) {
-                // Codifica a nova senha e salva
                 user.setPassword(passwordEncoder.encode(vo.getNewPassword()));
 
                 String message = "User: " + user.getUsername() + " used an UPDATE function";
@@ -96,17 +91,13 @@ public class UserService {
     }
 
     public JwtResponseVo authenticateUser(LoginRequestVO loginRequestVO) {
-            // Cria um objeto de autenticação com o email e a senha do usuário
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(loginRequestVO.getUsername(), loginRequestVO.getPassword());
 
-            // Autentica o usuário com as credenciais fornecidas
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-            // Obtém o objeto UserDetails do usuário autenticado
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            // Gera um token JWT para o usuário autenticado
             return new JwtResponseVo(jwtTokenService.generateToken(userDetails));
     }
 }

@@ -37,13 +37,10 @@ public class ViaCepService {
                     address = gson.fromJson(result, Address.class);
                 }
             } else {
-                // Trate o erro de status não 200 conforme necessário
                 throw new IOException("Failed to retrieve address: HTTP status code " + statusCode);
             }
 
-//            if(address != null){
-//                repository.save(address);
-//            }
+
 
         } catch (ClientProtocolException e) {
             throw new RuntimeException("Client protocol exception occurred", e);

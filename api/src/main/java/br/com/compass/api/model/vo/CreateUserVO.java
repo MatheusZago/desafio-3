@@ -7,11 +7,6 @@ import java.util.Objects;
 @JsonPropertyOrder({"id", "title" ,"author", "launchdate", "price"})
 public class CreateUserVO {
 
-//  "username": "string",
-//  "password": "string",
-//  "email": "string",
-//  "cep": "string"
-
     private String username;
     private String password;
     private String email;

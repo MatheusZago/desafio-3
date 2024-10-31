@@ -1,12 +1,9 @@
 package br.com.compass.api.repositories;
 
 import br.com.compass.api.model.User;
-import br.com.compass.api.model.vo.ResponseUserVO;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;

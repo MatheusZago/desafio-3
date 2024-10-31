@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaProducer {
 
-    //Classe feita para produzir as mensagens
-
     private static final String TOPIC = "notify_topic";
 
     @Autowired
