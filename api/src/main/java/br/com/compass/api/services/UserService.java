@@ -1,15 +1,20 @@
 package br.com.compass.api.services;
 
 import br.com.compass.api.config.SecurityConfig;
+import br.com.compass.api.exceptions.DuplicateUserException;
+import br.com.compass.api.exceptions.PasswordMismatchException;
+import br.com.compass.api.exceptions.UserNotFoundException;
 import br.com.compass.api.jwt.UserDetailsImpl;
 import br.com.compass.api.kafka.KafkaProducer;
 import br.com.compass.api.model.User;
 import br.com.compass.api.model.vo.*;
 import br.com.compass.api.model.vo.mapper.UserMapper;
 import br.com.compass.api.repositories.UserRepository;
+import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,12 +47,18 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping
-    public ResponseUserVO registerUser(CreateUserVO vo){
+    public ResponseUserVO registerUser(@RequestBody CreateUserVO vo) {
         User user = mapper.createVoToUser(vo);
 
         // Codifica a senha antes de salvar
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        repository.save(user);
+
+        try {
+            repository.save(user);
+        } catch (DataIntegrityViolationException e) {
+
+            throw new DuplicateUserException(vo.getUsername());
+        }
 
         ResponseUserVO responseUserVO = mapper.userToResponseVO(user);
 
@@ -73,12 +84,10 @@ public class UserService {
                 kafkaProducer.sendMessage(message);
                 repository.save(user);
             } else {
-                log.error("Password Error");
-                // TODO: Lançar uma exceção customizada aqui
+                throw new PasswordMismatchException();
             }
         }, () -> {
-            log.error("User not found");
-            // TODO: Lançar uma exceção customizada para usuário não encontrado
+            throw new UserNotFoundException(vo.getUsername());
         });
     }
 
