@@ -24,21 +24,7 @@ public class JwtTokenService {
 
     private static final String ISSUER = "pizzurg-api";
 
-//    public String generateToken(UserDetailsImpl user) {
-//        try {
-//            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-//            return JWT.create()
-//                    .withIssuer(ISSUER)
-//                    .withIssuedAt(creationDate())
-//                    .withExpiresAt(expirationDate())
-//                    .withSubject(user.getUsername())
-//                    .sign(algorithm);
-//        } catch (JWTCreationException exception){
-//            throw new JWTCreationException("Error generating token.", exception);
-//        }
-//    }
 
-    //witha uth
     public String generateToken(UserDetailsImpl user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
@@ -53,17 +39,6 @@ public class JwtTokenService {
         }
     }
 
-
-    private Instant creationDate() {
-        return ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant();
-    }
-
-    private Instant expirationDate() {
-
-        return ZonedDateTime.now(ZoneId.of("America/Recife")).plusHours(4).toInstant();
-    }
-
-    //Usando auth0 para o teste
     public String getSubjectFromToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
@@ -90,29 +65,5 @@ public class JwtTokenService {
         }
     }
 
-//    public String getSubjectFromToken(String token) {
-//        try {
-//            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-//            return JWT.require(algorithm)
-//                    .withIssuer(ISSUER)
-//                    .build()
-//                    .verify(token)
-//                    .getSubject();
-//        } catch (JWTVerificationException exception){
-//            throw new JWTVerificationException("Invalid or expired.");
-//        }
-//    }
 
-//    public boolean isValidToken(String token) {
-//        try {
-//            Claims claims = Jwts.parser()
-//                    .setSigningKey(SECRET_KEY)
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//
-//            return !claims.getExpiration().before(new Date());
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
 }
