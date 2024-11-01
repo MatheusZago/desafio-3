@@ -1,0 +1,75 @@
+services:
+  mysql:
+    image: mysql:8.0.29
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: challenge_users
+    ports:
+      - "3307:3307"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  api:
+    image: matheusluizago/api-challenge
+    container_name: api_service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/challenge_users?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092  # para conectar ao Kafka
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - kafka
+    networks:
+      - app-network
+
+  notify:
+    image: matheusluizago/notify-challenge
+    container_name: notify_service
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092  #  para conectar ao Kafka
+    depends_on:
+      - kafka
+      - zookeeper
+    networks:
+      - app-network
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,OUTSIDE://kafka:9094,INSIDE://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,OUTSIDE:PLAINTEXT,INSIDE:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094,INSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    ports:
+      - "9094:9094"  # Porta externa para conexão com o host
+      - "9093:9093"  # Porta externa para o listener INSIDE
+    depends_on:
+      - zookeeper
+    networks:
+      - app-network
+
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2182:2181"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
