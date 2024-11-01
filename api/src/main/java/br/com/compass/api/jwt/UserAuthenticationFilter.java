@@ -1,6 +1,8 @@
 package br.com.compass.api.jwt;
 
 import br.com.compass.api.config.SecurityConfig;
+import br.com.compass.api.exceptions.AuthenticationException;
+import br.com.compass.api.exceptions.UserNotFoundException;
 import br.com.compass.api.model.User;
 import br.com.compass.api.repositories.UserRepository;
 import br.com.compass.api.services.JwtTokenService;
@@ -33,14 +35,12 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         if (checkIfEndpointIsNotPublic(request)) {
             String token = recoveryToken(request);
             if (token == null) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "O token está ausente.");
-                return;
+                throw new AuthenticationException("The token is absent.");
             }
 
             // Verifica a validade do token
             if (!jwtTokenService.isValidToken(token)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido.");
-                return; // Finaliza o processamento se o token for inválido
+                throw new AuthenticationException("The token is invalid.");
             }
 
             String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
@@ -56,8 +56,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 // Define o objeto de autenticação no contexto de segurança do Spring Security
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuário não encontrado.");
-                return;
+                throw new UserNotFoundException(subject);
             }
         }
 
@@ -65,7 +64,6 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // Recupera o token do cabeçalho Authorization da requisição
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

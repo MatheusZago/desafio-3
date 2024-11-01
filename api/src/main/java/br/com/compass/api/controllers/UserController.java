@@ -48,10 +48,4 @@ public class UserController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<Void> deleteUsersByUsername(@PathVariable String username) {
-        service.deleteUsersByUsername(username);
-        return ResponseEntity.noContent().build();
-    }
-
 }
